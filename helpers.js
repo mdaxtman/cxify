@@ -35,17 +35,21 @@ const sortVariablesBetweenCurlies = line => {
 };
 
 const verifyFiles = (files = []) => {
-    const verifiedFiles = files.map(file => {
-        return fse.ensureFile(file)
-            .then(() => file)
+    const verifiedFiles = files.filter(async (file) => {
+        if (!(/.jsx?$/.test(file))) {
+            return false;
+        }
+
+        const result = await fse.ensureFile(file)
+            .then(() => !!file)
             .catch((err) => {
                 if (err) {
                     console.log(chalk.red(`ERROR: file named ${file} does not exist.`));
                     process.exit(1);
                 }
-
-                resolve(file);
             });
+        
+        return result;
     });
 
     return Promise.all(verifiedFiles);

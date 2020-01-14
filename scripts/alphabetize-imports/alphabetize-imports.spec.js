@@ -1,4 +1,3 @@
-const assert = require("assert");
 const expect = require("chai").expect;
 const badImports = require("../../mocks/bad-imports.json");
 const fixedImports = require("../../mocks/fixed-imports.json");
