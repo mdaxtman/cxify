@@ -10,7 +10,7 @@ argv.option({
     short: "f",
     type: "list,path",
     description: "Defines a specific file to cxify, otherwise git modified or untracked files will be cxified",
-    example: "'script --file=value' or 'script -f value'"
+    example: "'script --file=./path/to/file.js' or 'script -f absolute/file/path.js'"
 });
 
 const {options} = argv.run();
@@ -37,11 +37,9 @@ shell.exec("git status --porcelain", {silent: true}, (code, stdout, stderr) => {
     initializeFileTransform(absolutePathList);
 });
 
-// fix git errors with modified files and different types.
-// ensure that js and jsx files are the only types we work on for now.
+// fix git errors with modified files, newly added files, etc and different types.
 // encorporate prettier
 // abc defined object with nesting.
-// convert single line comments from /* to //
 // multi line defined object.
 // abc destructured object with nesting.
 // multi line destructured object
