@@ -29,7 +29,7 @@ const extractAndSortSingleLineVariablesBetweenMatchingCurlies = line => {
     return variables.split(",").map(s => s.trim()).sort(customSort).join(",");
 };
 
-const sortVariablesBetweenCurlies = line => {
+const sortVariablesBetweenImportCurlies = line => {
     const fromClause = line.match(/from.*/g)[0];
     return line.slice(0, line.indexOf("{")) + `{${extractAndSortSingleLineVariablesBetweenMatchingCurlies(line)}} ${fromClause}`;
 };
@@ -45,8 +45,9 @@ const verifyFiles = (files = []) => {
             .catch((err) => {
                 if (err) {
                     console.log(chalk.red(`ERROR: file named ${file} does not exist.`));
-                    process.exit(1);
                 }
+
+                return false;
             });
         
         return result;
@@ -61,6 +62,6 @@ module.exports = {
     deterimineValidImportLine,
     determineLineWithUnmatchedCurly,
     extractAndSortSingleLineVariablesBetweenMatchingCurlies,
-    sortVariablesBetweenCurlies,
+    sortVariablesBetweenImportCurlies,
     verifyFiles
 };

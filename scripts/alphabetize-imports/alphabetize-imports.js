@@ -35,7 +35,7 @@ const flattenMultiLineImports = (fileByLine) => {
             }
 
             if (/}/.test(currentLine)) {
-                const sortedVariables = helpers.sortVariablesBetweenCurlies(currentLine);
+                const sortedVariables = helpers.sortVariablesBetweenImportCurlies(currentLine);
                 currentLine = fileByLine[i] = sortedVariables;
             }
         }
