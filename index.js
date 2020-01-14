@@ -3,7 +3,7 @@
 const argv = require("argv");
 const shell = require("shelljs");
 const helpers = require("./helpers");
-const alphabetizeImports = require("./scripts/alphabetize-imports/alphabetize-imports");
+const initializeFileTransform = require("./scripts/initialize-file-transform");
 
 argv.option({
     name: "file",
@@ -15,17 +15,13 @@ argv.option({
 
 const {options} = argv.run();
 
-const scripts = [
-    alphabetizeImports
-];
-
 if (options.file) {
-    const useOptions = async (files) => {
+    const useFileOption = async (files) => {
         const verifiedFiles = await helpers.verifyFiles(files);
-        helpers.runScriptsOnFiles(verifiedFiles, scripts);
+        initializeFileTransform(verifiedFiles);
     };
 
-    useOptions(options.file);
+    useFileOption(options.file);
 
     return;
 }
@@ -38,7 +34,7 @@ shell.exec("git status --porcelain", {silent: true}, (code, stdout, stderr) => {
 
     const cleanedFileList = stdout.split("\n").filter(s => s && !/^D/.test(s) && /js(x)?$/.test(s)).map(s => s.replace(/.*\s/, ""));
     const absolutePathList = cleanedFileList.map((l) => helpers.buildAbsolutePath(l));
-    helpers.runScriptsOnFiles(absolutePathList, scripts);
+    initializeFileTransform(absolutePathList);
 });
 
 // fix git errors with modified files and different types.

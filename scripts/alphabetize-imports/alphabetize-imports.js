@@ -1,8 +1,7 @@
 const _ = require("lodash");
 const helpers = require("../../helpers");
 
-const flattenMultiLineImports = (str) => {
-    const fileByLine = str.split("\n");
+const flattenMultiLineImports = (fileByLine) => {
     let firstImportIndex;
     let lastImportIndex;
 
@@ -142,12 +141,12 @@ const spreadImportsToMultiLines = (groupedImports) => {
     });
 };
 
-const alphabetizeImports = (file) => {
-    const importStats = flattenMultiLineImports(file);
+const alphabetizeImports = (fileByLine) => {
+    const importStats = flattenMultiLineImports(fileByLine);
 
     // no imports found.
     if (typeof importStats.firstImportIndex !== "number") {
-        return importStats.fileByLine.join("\n");
+        return importStats.fileByLine;
     }
 
     const {sortedImports, restOfFile, lineToCommentMap} = isolateAndSortImports(importStats);
@@ -157,7 +156,7 @@ const alphabetizeImports = (file) => {
 
     restOfFile.splice(importStats.firstImportIndex, 0, ...multiLineImports);
 
-    return restOfFile.join("\n");
+    return restOfFile;
 };
 
 module.exports = alphabetizeImports;

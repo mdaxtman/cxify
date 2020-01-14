@@ -1,7 +1,6 @@
 const chalk = require("chalk")
 const fse = require("fs-extra");
 const path = require("path");
-const stringHash = require("string-hash");
 
 const buildAbsolutePath = partialPath => path.resolve(".", partialPath);
 const deterimineValidImportLine = line => /^import(?!\()/.test(line.trim());
@@ -52,44 +51,12 @@ const verifyFiles = (files = []) => {
     return Promise.all(verifiedFiles);
 };
 
-const runScriptsOnFiles = (fileList, scripts) => {
-    // cluster goes here...
-
-    fileList.forEach(file => {
-        new Promise(resolve => {
-            resolve(fse.readFile(file, "utf-8"));
-        }).catch(err => {
-            console.log(chalk.red(`File Read Error: ${err}`))
-        }).then(data => {
-            const originalHash = stringHash(data);
-            const cloneScripts = scripts.slice();
-            let transformedData = data;
-
-            while(cloneScripts.length) {
-                const script = cloneScripts.pop();
-                transformedData = script(transformedData);
-            }
-            
-            if (originalHash !== stringHash(transformedData)) {
-                console.log(chalk.yellow(`${file}\n - has been fixed`));
-
-                return fse.writeFile(file, transformedData);
-            } else {
-                console.log(chalk.green(`${file}\n - had no formatting errors`));
-            }
-
-            return transformedData;
-        });
-    });
-};
-
 module.exports = {
     buildAbsolutePath,
     customSort,
     deterimineValidImportLine,
     determineLineWithUnmatchedCurly,
     extractAndSortSingleLineVariablesBetweenMatchingCurlies,
-    runScriptsOnFiles,
     sortVariablesBetweenCurlies,
     verifyFiles
 };
